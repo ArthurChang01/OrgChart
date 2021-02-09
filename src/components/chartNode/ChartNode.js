@@ -4,7 +4,7 @@ import {dragNodeService, selectNodeService} from "../../services/NodeService";
 import "./ChartNode.css";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlusCircle, faTrashAlt, faUserCircle} from "@fortawesome/free-solid-svg-icons";
-import {Form, Input, Tooltip} from "antd";
+import {Tooltip} from "antd";
 
 const propTypes = {
     datasource: PropTypes.object,
@@ -22,15 +22,6 @@ const defaultProps = {
     multipleSelect: false
 };
 
-const layout = {
-    labelCol: {span: 8},
-    wrapperCol: {span: 16},
-};
-
-const tailLayout = {
-    wrapperCol: {offset: 8, span: 16},
-};
-
 const ChartNode = ({
                        datasource,
                        NodeTemplate,
@@ -43,7 +34,6 @@ const ChartNode = ({
 
     const node = useRef();
 
-    const formRef = React.createRef();
     const nodeTooltipRef = React.createRef();
 
     const [isChildrenCollapsed, setIsChildrenCollapsed] = useState(false);
@@ -53,7 +43,6 @@ const ChartNode = ({
     const [leftEdgeExpanded, setLeftEdgeExpanded] = useState();
     const [allowedDrop, setAllowedDrop] = useState(false);
     const [selected, setSelected] = useState(false);
-    const [canAddingChild, setCanAddingChild] = useState(false);
     const [isEditable, setIsEditable] = useState(false);
 
     const nodeClass = [
@@ -103,18 +92,7 @@ const ChartNode = ({
         };
     }, [multipleSelect, datasource]);
 
-    const cancelEdition = e => {
-        e.stopPropagation();
-
-        formRef.current.resetFields();
-
-        setCanAddingChild(false);
-        setIsEditable(!isEditable);
-    }
-
     const addArrows = e => {
-        setCanAddingChild(true);
-
         const node = e.target.closest("li");
         const parent = node.parentNode.closest("li");
         const isAncestorsCollapsed =
@@ -132,8 +110,6 @@ const ChartNode = ({
     };
 
     const removeArrows = () => {
-        setCanAddingChild(false);
-
         setTopEdgeExpanded(undefined);
         setRightEdgeExpanded(undefined);
         setBottomEdgeExpanded(undefined);
@@ -230,8 +206,6 @@ const ChartNode = ({
     };
 
     const clickNodeHandler = e => {
-        e.stopPropagation();
-
         setIsEditable(true);
 
         if (onClickNode) {
@@ -292,57 +266,21 @@ const ChartNode = ({
                     ) : (
                         <>
                             {
-                                isEditable
-                                    ? (<Form {...layout} ref={formRef}>
-                                        <Form.Item
-                                            label="部門"
-                                            name="department"
-                                            rules={[{required: true, message: '請輸入部門'}]}
-                                        >
-                                            <Input/>
-                                        </Form.Item>
-
-                                        <Form.Item
-                                            label="姓"
-                                            name="lastname"
-                                            rules={[{required: true, message: '請輸入主管姓氏'}]}
-                                        >
-                                            <Input/>
-                                        </Form.Item>
-
-                                        <Form.Item
-                                            label="名"
-                                            name="firstname"
-                                            rules={[{required: true, message: '請輸入主管名稱'}]}
-                                        >
-                                            <Input/>
-                                        </Form.Item>
-
-                                        <Form.Item {...tailLayout}>
-                                            <button type="primary">
-                                                Submit
-                                            </button>
-                                            <span> </span>
-                                            <button type="primary" onClick={cancelEdition}>取消</button>
-                                        </Form.Item>
-
-                                    </Form>)
-                                    :
-                                    <div className="oc-heading">
-                                        {
-                                            datasource.relationship &&
-                                            datasource.relationship.charAt(2) === "1" && (
-                                                <span>
+                                <div className="oc-heading">
+                                    {
+                                        datasource.relationship &&
+                                        datasource.relationship.charAt(2) === "1" && (
+                                            <span>
                                     <FontAwesomeIcon size="lg" icon={faUserCircle} style={{color: "#f78f11"}}/>
                                 </span>
-                                            )}
-                                        <span className="oc-content">{datasource.title} - {datasource.name}</span>
-                                        <span>
+                                        )}
+                                    <span className="oc-content">{datasource.title} - {datasource.name}</span>
+                                    <span>
                                     <Tooltip placement="topLeft" title={<span>刪除</span>}>
                                         <FontAwesomeIcon icon={faTrashAlt} style={{color: "#d5dadd"}}/>
                                     </Tooltip>
                                 </span>
-                                    </div>
+                                </div>
                             }
                         </>
                     )}
@@ -401,7 +339,7 @@ const ChartNode = ({
                         />
                     )}
                     <Tooltip placement="topLeft" title={<span>請點選 ＋ 符號新增下一層部門</span>}>
-                        <FontAwesomeIcon className={!isEditable ? "":"hidden"} icon={faPlusCircle}/>
+                        <FontAwesomeIcon className={!isEditable ? "" : "hidden"} icon={faPlusCircle}/>
                     </Tooltip>
                 </Tooltip>
             </div>
