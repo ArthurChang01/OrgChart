@@ -43,7 +43,6 @@ const ChartNode = ({
     const [leftEdgeExpanded, setLeftEdgeExpanded] = useState();
     const [allowedDrop, setAllowedDrop] = useState(false);
     const [selected, setSelected] = useState(false);
-    const [isEditable, setIsEditable] = useState(false);
 
     const nodeClass = [
         "oc-node",
@@ -206,8 +205,6 @@ const ChartNode = ({
     };
 
     const clickNodeHandler = e => {
-        setIsEditable(true);
-
         if (onClickNode) {
             onClickNode(datasource);
         }
@@ -339,7 +336,7 @@ const ChartNode = ({
                         />
                     )}
                     <Tooltip placement="topLeft" title={<span>請點選 ＋ 符號新增下一層部門</span>}>
-                        <FontAwesomeIcon className={!isEditable ? "" : "hidden"} icon={faPlusCircle}/>
+                        <FontAwesomeIcon icon={faPlusCircle}/>
                     </Tooltip>
                 </Tooltip>
             </div>
